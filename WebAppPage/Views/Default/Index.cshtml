@@ -1,0 +1,121 @@
+﻿@model WebAppPage.Models.PageModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+</head>
+<body>
+    <div> 
+        @using (Html.BeginForm("Index", "Default", FormMethod.Post, new { name = "myform" }))
+        {
+            <div class="report_search"> 
+                @Html.TextBoxFor(m => m.Num, new { @maxlength = 5 })
+                <input name="Submit33" type="submit" class="black13" value="查詢" />  
+            </div>
+        } 
+
+        @if (Model.DataQueryList != null)
+        {
+            if (Model.DataQueryList.Count > 0)
+            {
+
+                <table id="reportresult">
+                    <tr>
+                        <th class="orderlist">購買序號</th>
+                        <th class="orderlist">商品名稱</th>
+                        <th class="orderlist">數量</th>
+                        <th class="orderlist">交易金額</th>
+                        <th class="orderlist">門號</th>
+                        <th class="orderlist">確認結帳</th>
+                    </tr>
+                    @foreach (var item in Model.DataQueryList)
+                    {
+                        <tr>
+                            <td>@item.BuyNum</td>
+                            <td>@item.ProductName</td>
+                            <td>@item.BuyCount</td>
+                            <td>@item.BuyAmount</td>
+                            <td>@item.BuyPhoneNum</td>
+                            <td>
+                                <input name="Submit33" type="submit" class="black13" value="結帳發送" />
+                            </td>
+                        </tr>
+
+                    }
+
+
+
+                </table>
+
+                <div class="clearfix"></div>
+                <div class="pagebar">
+                    @if (Model.TotalPageCount > 0)
+                    {
+
+                        if (Model.nextPage != 0 & Model.nextPage != 1)
+                        {
+                            <a onclick="changepage(1)">第一頁</a> <a onclick="changepage(@Model.nextPage - 1)">上一頁</a>
+                            <span class="gary12">|</span>
+                        }
+                        <span class="pageList">
+                            @for (int i = 1; i <= Model.TotalPageCount; i++)
+                            {
+                                if (Model.nextPage == i)
+                                {
+                                    <span class="break">@i</span>
+                                }
+                                else
+                                {
+                                    if (Model.TotalPageCount > 7)
+                                    {
+
+                                        if ((((Model.nextPage - 3) <= i | (Model.TotalPageCount - 6 <= i)) & Model.nextPage > i) | (((Model.nextPage + 3) >= i | (Model.nextPage + (7 - Model.nextPage) >= i)) & Model.nextPage < i))
+                                        {
+                                            <a onclick="changepage(@i)">@i 大於7</a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <a onclick="changepage(@i)">@i</a>
+                                    }
+
+                                }
+
+                            }
+                        </span>
+                        if (Model.nextPage != Model.TotalPageCount)
+                        {
+                            <span class="gary12">|</span>
+                            <a onclick="changepage(@Model.nextPage + 1)">下一頁</a> <a onclick="changepage(@Model.TotalPageCount )">最終頁</a>
+                        }
+
+                    }
+
+                    @using (Html.BeginForm("Index", "Default", FormMethod.Post, new { name = "myform2", id = "myform2" }))
+                    {
+                        @Html.HiddenFor(m => m.Num)
+                        @Html.HiddenFor(m => m.nextPage)
+                    }
+                </div>
+            }
+
+        }
+    </div>
+
+</body>
+<script type="text/javascript">
+        function changepage(newpage) {
+            $("#nextPage").val(newpage);
+            $("#myform2").submit();
+        }
+</script>
+</html>
+
+
